@@ -419,7 +419,7 @@ const EM={fac:.05,qua:.01,hum:.001,mai:.001,bur:.002,min:.5/12,fer:-.001,arb:.00
 
 /* ===== Optimisation routes + chemin de fer ===== */
 const RL=new Uint8Array(NN),RSTOP=new Uint8Array(NN),TRV=20,TRP=20,TRC={wood:300,stone:200,iron:700,gravel:300};
-const rvb=a=>{const V=a.home>=0&&VID[a.home]?S.vil.get(VID[a.home]):null;return V&&V.bo>1?1+.3*(V.bo-1):1};   /* rivalité : une ville en retard sur sa voisine fait plus d'enfants */
+const rvb=a=>{const V=a.home>=0&&VID[a.home]?S.vil.get(VID[a.home]):null;return V&&V.bo>1?1+.3*(V.bo-1):1};   /* rivalitï¿½ : une ville en retard sur sa voisine fait plus d'enfants */
 function straight(p){if(p.length<3)return p;const ok=(a,b)=>{const x0=a%W,y0=a/W|0,x1=b%W,y1=b/W|0,n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0));let pv=H[a];for(let s=1;s<=n;s++){const j=Math.round(y0+(y1-y0)*s/n)*W+Math.round(x0+(x1-x0)*s/n);if(H[j]<0||(built(j)&&!RD[j])||Math.abs(H[j]-pv)>60)return false;pv=H[j]}return true};
  const o=[p[0]];let i=0;while(i<p.length-1){let j=Math.min(p.length-1,i+70);while(j>i+1&&!ok(p[i],p[j]))j--;const a=p[i],b=p[j],x0=a%W,y0=a/W|0,x1=b%W,y1=b/W|0,n=Math.max(Math.abs(x1-x0),Math.abs(y1-y0));for(let s=1;s<=n;s++){const c=Math.round(y0+(y1-y0)*s/n)*W+Math.round(x0+(x1-x0)*s/n);if(c!==o[o.length-1])o.push(c)}i=j}return o}   /* routes/rails : segments droits, virages seulement si le relief l'impose */
 function sendGroup(g,s){const sx=s%W,sy=s/W|0,grp={s,f:false};reveal(sx,sy,6);for(const a of g){if(a.home>=0)OC[a.home]-=a.w;a.home=-1;a.mo=0;a.rs=-1;a.pa=null;a.pr=null;a.mg=grp;a.t=-5;a.tx=sx+.5+(rnd()-.5)*.8;a.ty=sy+.5+(rnd()-.5)*.8}trainTry(g)}
@@ -440,7 +440,7 @@ function railStep(){const q=S.rj;if(!q)return;for(let n=0;n<8&&q.pi<q.path.lengt
 function trainStop(r,c){r.pax=r.pax.filter(a=>{if(!S.ag.includes(a))return false;if(a.dp!==c)return true;a.bd=0;a.x=c%W+.5+(rnd()-.5)*.6;a.y=(c/W|0)+.5+(rnd()-.5)*.6;a.t=-5;a.mo=0;return false});
  r.wait=r.wait.filter(a=>{if(!S.ag.includes(a))return false;if(a.fr===c&&r.pax.length<TRP){r.pax.push(a);return false}if(S.day-a.wt>200){a.bd=0;a.t=-5;a.x=a.fr%W+.5;a.y=(a.fr/W|0)+.5;return false}return true})}
 function trainStep(){if(!S.trn)return;for(const r of S.trn){const P=r.path;let mv=TRV;while(mv-->0){const n=r.i+r.dir;if(n<0||n>=P.length){r.dir=-r.dir;break}r.i=n;if(RSTOP[P[n]]){trainStop(r,P[n]);break}}
- const c=P[r.i];r.x=c%W+.5;r.y=(c/W|0)+.5;for(const a of r.pax){a.x=r.x;a.y=r.y}}}   /* train simulé réellement : 20 cases/jour simulé, 20 passagers max */
+ const c=P[r.i];r.x=c%W+.5;r.y=(c/W|0)+.5;for(const a of r.pax){a.x=r.x;a.y=r.y}}}   /* train simulï¿½ rï¿½ellement : 20 cases/jour simulï¿½, 20 passagers max */
 function drawRail(sq,bs){if(!S.rls)return;const s=Math.max(2,bs*.8);for(const r of S.rls)for(const c of r.path)sq(c,RSTOP[c]?"#9a9a9a":"#e02020",RSTOP[c]?bs:s);
  if(S.rj)for(let k=0;k<S.rj.pi;k++)sq(S.rj.path[k],"#e02020",s);
  for(const r of S.trn||[])sq((r.y|0)*W+(r.x|0),"#ffe600",bs*1.4)}
